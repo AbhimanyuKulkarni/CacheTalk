@@ -40,7 +40,7 @@ char CBitStream::_read_bit(int offset) {
     }
     else {
         cerr << "Could not read bit" << endl;
-        return NULL;
+        return 0;
     }
 }
 
@@ -59,10 +59,21 @@ void CBitStream::WriteWord(WORD value) {
 }
 
 WORD* CBitStream::ReadNextWord() {
-    static WORD* vtemp;
-    for(int i = 0; i < WORDLEN; i++){
-        *vtemp[i] = _read_bit(m_curr_offset+i);
-        m_curr_offset++;
+    if(m_curr_offset+WORDLEN < m_blen) {
+        static WORD* vtemp;
+        for(int i = 0; i < WORDLEN; i++){
+            *vtemp[i] = _read_bit(m_curr_offset+i);
+            m_curr_offset++;
+        }
+        return vtemp;
     }
-    return vtemp;
+    else {
+        return NULL;
+    }
+}
+
+void CBitStream::PrintStream() {
+    for(int i = 0; i < m_blen; i++) {
+        cout << m_bstream[i];
+    }
 }

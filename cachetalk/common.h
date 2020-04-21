@@ -1,4 +1,13 @@
+#ifndef _COMMON_H
+#define _COMMON_H
+
 #define WORDLEN 3
+
+#include "../common/cache_manipulation.h"
+#include "../common/constants.h"
+#include "../common/patterns.h"
+#include "../common/rdtsc.h"
+
 typedef char WORD[WORDLEN];  
 
 class CBitStream {
@@ -10,6 +19,7 @@ public:
     char ReadBit(int offset);
     void WriteWord(WORD value);
     WORD* ReadNextWord();
+    void PrintStream();
 private:
     // Private Methods
     void _write_bit(char value);
@@ -20,3 +30,5 @@ private:
     int m_blen;
     int m_curr_offset;
 };
+
+#endif

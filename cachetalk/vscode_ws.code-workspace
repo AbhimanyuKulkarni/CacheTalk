@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "/home/fearofadankplanet/Documents/ECE757/Project/cc_artifact_evaluation"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.tlh": "cpp"
+		}
+	}
+}

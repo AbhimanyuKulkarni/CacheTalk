@@ -139,8 +139,6 @@ void main(int argc, char *argv[]){
           *key_set = KEYSET;
           _r = write(data_socket, buffer, BUFFERSIZE);
           break;
-        case TROJAN_ACCESS:
-          
         case KILL:;
           terminate = 1;
         case END:;

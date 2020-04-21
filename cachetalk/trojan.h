@@ -1,8 +1,6 @@
+#ifndef _COMMON_H
 #include "common.h"
-#include "../common/constants.h"
-#include "../common/cache_manipulation.h"
-#include "../common/patterns.h"
-#include "../common/rdtsc.h"
+#endif
 
 class Trojan {
 public:

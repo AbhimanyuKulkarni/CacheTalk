@@ -1,5 +1,8 @@
 #include "spy.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+using namespace std;
 
 int compare(const void *ap, const void *bp)
 {
@@ -34,13 +37,17 @@ int Spy::GetSize(void(*CallTrojan)(), void(*flush)()) {
 
 WORD* Spy::DecryptData(int size) {
     WORD* vtemp;
-    int size_idx = (int) bsearch(&size, &sizes, 8, sizeof(int), compare);
+    int size_idx = *((int*) bsearch(&size, &sizes, 8, sizeof(int), compare));
     int tmp_idx = size_idx;
     for(int i = 0; i < WORDLEN; i++) {
         *vtemp[i] = tmp_idx%2;
         tmp_idx = tmp_idx/2;
     }
     m_rec_stream.WriteWord(*vtemp);
+    printf("Spy: Received data = ");
+    for(int i = 0; i < WORDLEN; i++) {
+        cout << vtemp[i];
+    }
     return vtemp;
 }
 
