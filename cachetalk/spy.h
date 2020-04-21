@@ -2,6 +2,7 @@
 #include "common.h"
 #endif
 
+
 class Spy{
 public:
     // Public Methods
@@ -15,5 +16,5 @@ public:
     // Public Members
     CBitStream m_rec_stream;
     long m_tset;
-    int sizes[8];
+    const int sizes[8] = {8, 16, 20, 24, 34, 36, 40, 64};
 };

@@ -9,7 +9,6 @@
 #include "../common/rdtsc.h"
 
 typedef char WORD[WORDLEN];  
-
 class CBitStream {
 public:
     // Public Methods

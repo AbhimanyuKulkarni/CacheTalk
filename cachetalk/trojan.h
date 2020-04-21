@@ -1,7 +1,6 @@
 #ifndef _COMMON_H
 #include "common.h"
 #endif
-
 class Trojan {
 public:
     // Public Methods
@@ -19,5 +18,5 @@ public:
     CBitStream m_trans_stream;
     WORD* m_curr_data;
     int m_curr_size_idx;
-    int sizes[8];
+    const int sizes[8] = {8, 16, 20, 24, 34, 36, 40, 64};
 };

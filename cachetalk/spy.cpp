@@ -6,8 +6,10 @@ using namespace std;
 
 int compare(const void *ap, const void *bp)
 {
+    printf("In compare\n");
     const int *a = (int *) ap;
     const int *b = (int *) bp;
+    printf("*a is %d, *b is %d\n",*a, *b);
     if(*a < *b)
         return -1;
     else if(*a > *b)
@@ -19,7 +21,6 @@ int compare(const void *ap, const void *bp)
 Spy::Spy(void) {
     m_tset = 0;
     CBitStream m_rec_stream = CBitStream();
-    int sizes[8] = {8, 16, 20, 24, 34, 36, 40, 64};
 }
 
 Spy::~Spy(void) {
@@ -37,6 +38,7 @@ int Spy::GetSize(void(*CallTrojan)(), void(*flush)()) {
 
 WORD* Spy::DecryptData(int size) {
     WORD* vtemp;
+    vtemp = (WORD*)malloc(sizeof(WORD));
     int size_idx = *((int*) bsearch(&size, &sizes, 8, sizeof(int), compare));
     int tmp_idx = size_idx;
     for(int i = 0; i < WORDLEN; i++) {
