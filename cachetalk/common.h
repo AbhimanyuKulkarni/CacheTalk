@@ -2,6 +2,7 @@
 #define _COMMON_H
 
 #define WORDLEN 3
+//#define DEBUG
 
 #include "../common/cache_manipulation.h"
 #include "../common/constants.h"

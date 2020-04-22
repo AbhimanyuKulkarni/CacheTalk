@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 
+
+
 using namespace std;
 
 CBitStream::CBitStream(void) {
@@ -35,15 +37,17 @@ void CBitStream::_write_bit(char value) {
 }
 
 char CBitStream::_read_bit(int offset) {
-    printf("in read bit with offset %d\n",offset);
     if(m_bstream != NULL) {
-        printf("m_bstream is not NULL\n");
-        printf("m_bstream: %c\n",m_bstream[offset]);
+#ifdef DEBUG
+        printf("m_bstream is not NULL");
+#endif
         return m_bstream[offset];
     }
     else {
-        printf("Could not read bit\n");
+#ifdef DEBUG
+        printf("Could not read bit");
         cerr << "Could not read bit" << endl;
+#endif
         return 0;
     }
 }
@@ -63,22 +67,26 @@ void CBitStream::WriteWord(WORD value) {
 }
 
 WORD* CBitStream::ReadNextWord() {
-    printf("Startig to read next word\n");
+#ifdef DEBUG 
+    printf("Starting to read next word\n");
+#endif
     if(m_curr_offset+WORDLEN < m_blen) {
         WORD *vtemp;
         vtemp = (WORD*)malloc(sizeof(WORD));
-        //*vtemp[0] = '0';
 
+#ifdef DEBUG 
         printf("after word *\n");
-        //fflush(stdout);
+#endif
         for(int i = 0; i < WORDLEN; i++){
-            printf("In %d iter and %d\n",i,m_curr_offset);
             (*vtemp)[i] = _read_bit(m_curr_offset);
-            printf("after read bit\n");
-            //fflush(stdout);
+#ifdef DEBUG 
+            printf("after read bit\n"); 
+#endif
             m_curr_offset++;
         }
+#ifdef DEBUG 
         printf("read the whole WORDLEN\n");
+#endif
         return vtemp;
     }
     else {
