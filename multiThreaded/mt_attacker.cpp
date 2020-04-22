@@ -14,18 +14,16 @@ void flush(){
 
 void trojan_access() {
     /* Set the lock value to 2 and wait for it to come back to 1 */
-    pthread_mutex_lock(&lock);
     covid = 2;
-    while(covid != 1);
     pthread_mutex_unlock(&lock);
+    pthread_mutex_lock(&lock);
 }
 
 void ack_to_trojan() {
     /* Set the lock value to 3 and wait for it to come back to 1 */
-    pthread_mutex_lock(&lock);
     covid = 3;
-    while(covid != 1);
     pthread_mutex_unlock(&lock);
+    pthread_mutex_lock(&lock);
     
 }
 
@@ -35,17 +33,19 @@ void *spy_wrapper(void *arg) {
     printf("In spy wrapper\n");
 #endif
     Spy spy;
-
+    
     // Spy Init Phase
     spy.SetTargetSet(tset);
 
     // Main Operation
     int done = 0;
     while(!done) {
+        pthread_mutex_lock(&lock);
         int temp_size;
         temp_size = spy.GetSize(&trojan_access, &flush);
         spy.DecryptData(temp_size);
         ack_to_trojan();
+        pthread_mutex_unlock(&lock);
         /* How to update the "done" variable? */
     }
 
@@ -70,10 +70,10 @@ void *trojan_wrapper(void *arg) {
     while(!done) {
         pthread_mutex_lock(&lock);
         //while(/*Wait to acquire lock*/);
-        if(covid == 1) {
+        if(covid == 2) {
             trojan.AccessSet();
         }
-        else if(covid == 2) {
+        else if(covid == 3) {
             trojan.TransmissionAck();
             WORD* nxt_data = trojan.GetData();
             if(nxt_data == NULL) {
@@ -82,7 +82,7 @@ void *trojan_wrapper(void *arg) {
             done = 0;
         }
         /* Here -> Set the lock value back to 0, i.e. release the lock*/
-        covid = 0;
+        covid = 1;
         pthread_mutex_unlock(&lock);
     }
 

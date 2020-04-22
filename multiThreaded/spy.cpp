@@ -7,12 +7,12 @@ using namespace std;
 int compare(const void *ap, const void *bp)
 {
 #ifdef DEBUG
-    printf("In compare\n");
+    //printf("In compare\n");
 #endif
     const int *a = (int *) ap;
     const int *b = (int *) bp;
 #ifdef DEBUG
-    printf("*a is %d, *b is %d\n",*a, *b);
+    //printf("*a is %d, *b is %d\n",*a, *b);
 #endif
     if(*a < *b)
         return -1;
