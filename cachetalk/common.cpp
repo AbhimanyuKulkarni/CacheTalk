@@ -62,36 +62,31 @@ char CBitStream::ReadBit(int offset) {
 
 void CBitStream::WriteWord(WORD value) {
     for(int i = 0; i < WORDLEN; i++){
-        _write_bit(value[i]);
+        _write_bit(value.x[i]);
     }
 }
 
-WORD* CBitStream::ReadNextWord() {
-#ifdef DEBUG 
-    printf("Starting to read next word\n");
-#endif
-    if(m_curr_offset+WORDLEN < m_blen) {
-        WORD *vtemp;
-        vtemp = (WORD*)malloc(sizeof(WORD));
+WORD CBitStream::ReadNextWord() {
 
-#ifdef DEBUG 
-        printf("after word *\n");
-#endif
+    #ifdef DEBUG 
+        printf("Starting to read next word\n");
+    #endif
+
+    WORD vtemp;
+
+    if(m_curr_offset+WORDLEN < m_blen) {    
         for(int i = 0; i < WORDLEN; i++){
-            (*vtemp)[i] = _read_bit(m_curr_offset);
-#ifdef DEBUG 
-            printf("after read bit\n"); 
-#endif
+            vtemp.x[i] = _read_bit(m_curr_offset);
             m_curr_offset++;
         }
-#ifdef DEBUG 
-        printf("read the whole WORDLEN\n");
-#endif
-        return vtemp;
     }
-    else {
-        return NULL;
+    else {   
+        for(int i = 0; i < WORDLEN; i++){
+            vtemp.x[i] = 'e';
+        }
     }
+
+    return vtemp;
 }
 
 void CBitStream::PrintStream() {

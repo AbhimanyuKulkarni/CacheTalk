@@ -9,7 +9,10 @@
 #include "../common/patterns.h"
 #include "../common/rdtsc.h"
 
-typedef char WORD[WORDLEN];  
+//typedef char WORD[WORDLEN];  
+
+typedef struct WORD {char x[3];} WORD;  
+
 class CBitStream {
 public:
     // Public Methods
@@ -18,7 +21,7 @@ public:
     void WriteBit(char value);
     char ReadBit(int offset);
     void WriteWord(WORD value);
-    WORD* ReadNextWord();
+    WORD ReadNextWord();
     void PrintStream();
 private:
     // Private Methods

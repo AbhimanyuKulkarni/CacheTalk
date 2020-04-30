@@ -10,6 +10,8 @@
 #endif
 using namespace std;
 
+#define DEBUG
+
 long tset = 0;
 
 Spy spy;

@@ -13,17 +13,17 @@ void init_trojan() {
     printf("Attacker: Init trojan\n");
 #endif
     trojan.SetTargetSet(tset);
-    trojan.GenStream(100);
-    WORD* first_data = trojan.GetData();
-    if(first_data == NULL) {
+    trojan.GenStream(2);
+    WORD first_data = trojan.GetData();
+    if(first_data.x[0] == 'e') {
         cerr << "Target Stream not generated! Please Check Trojan Initialization." << endl;
     }
 }
 
 int ack_to_trojan() {
     trojan.TransmissionAck();
-    WORD* nxt_data = trojan.GetData();
-    if(nxt_data == NULL) {
+    WORD nxt_data = trojan.GetData();
+    if(nxt_data.x[0] == 'e') {
         return 1;
     }
     return 0;
@@ -32,6 +32,11 @@ int ack_to_trojan() {
 void transmission_complete(){
     // Somehow compare transmitted and received streams
     printf("Transmission Completed\n");
+    printf("Transmitted Stream: ");
+    trojan.m_trans_stream.PrintStream();
+    printf("\nReceived Stream: ");
+    spy.m_rec_stream.PrintStream();
+    cout << endl;
 }
 
 void init_spy() {
@@ -44,15 +49,20 @@ void run_channel() {
     while(!done) {
         int temp_size;
         temp_size = spy.GetSize(&trojan_access, &flush);
-#ifdef DEBUG 
-        printf("temp size: %d\n",temp_size);
-#endif
+
+        #ifdef DEBUG 
+            printf("temp size: %d\n",temp_size);
+        #endif
+
         spy.DecryptData(temp_size);
         done = ack_to_trojan();
     }
 }
 
 int main (int argc, char *argv[]){
+
+    setbuf(stdout, NULL);
+
     init_spy();
 #ifdef DEBUG 
     printf("Attacker: After init spy\n");

@@ -10,7 +10,7 @@ public:
     virtual ~Spy(void);
     void SetTargetSet(long set);
     int GetSize(void(*CallTrojan)(), void(*flush)());
-    WORD* DecryptData(int size);
+    WORD DecryptData(int size);
 
 public:
     // Public Members
