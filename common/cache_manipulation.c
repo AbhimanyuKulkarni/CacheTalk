@@ -64,11 +64,38 @@ void PrimeSetWithSize(long set, int size){
    
     // Hardcode the data pattern for BDI:
     switch (size) {
+
+        case 8: // B8D0
+            memcpy ( footprint + addr, B8D0, LINESIZE);
+            for (int i = 1; i < NUM_WAYS; i++) {
+                memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
+            }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
+            break;
+        case 16: // B8D1
+            memcpy ( footprint + addr, B8D1, LINESIZE);
+            for (int i = 1; i < NUM_WAYS; i++) {
+                memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
+            }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
+            break;
+        case 20: //B4D1
+            memcpy ( footprint + addr, B4D1, LINESIZE);
+            for (int i = 1; i < NUM_WAYS; i++) {
+                memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
+            }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
+            break;
         case 24: // B8D2
             memcpy ( footprint + addr, B8D2, LINESIZE);
             for (int i = 1; i < NUM_WAYS; i++) {
                 memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
             }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
             break;
         case 28: // B8D0 + B4D1
             memcpy ( footprint + addr, B8D0, LINESIZE);
@@ -76,6 +103,8 @@ void PrimeSetWithSize(long set, int size){
             for (int i = 2; i < 1 + NUM_WAYS; i++) {
                 memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
             }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
             break;
         case 30: // B8D0 + B4D1 + B1D0 + B1D0
             memcpy ( footprint + addr, B8D0, LINESIZE);
@@ -85,12 +114,32 @@ void PrimeSetWithSize(long set, int size){
             for (int i = 4; i < 3 + NUM_WAYS; i++) {
                 memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
             }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
+            break;
+        case 34: // B2D1
+            memcpy ( footprint + addr, B2D1, LINESIZE);
+            for (int i = 1; i < NUM_WAYS; i++) {
+                memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
+            }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
+            break;
+        case 36: // B4D2
+            memcpy ( footprint + addr, B4D2, LINESIZE);
+            for (int i = 1; i < NUM_WAYS; i++) {
+                memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
+            }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
             break;
         case 40: // B8D4
             memcpy ( footprint + addr, B8D4, LINESIZE);
             for (int i = 1; i < NUM_WAYS; i++) {
                 memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
             }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
             break;
         case 44: // B4D2 + B8D0
             memcpy ( footprint + addr, B4D2, LINESIZE);
@@ -98,6 +147,8 @@ void PrimeSetWithSize(long set, int size){
             for (int i = 2; i < 1 + NUM_WAYS; i++) {
                 memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
             }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
             break;
         case 48: // B8D4 + B8D0
             memcpy ( footprint + addr, B8D4, LINESIZE);
@@ -105,6 +156,8 @@ void PrimeSetWithSize(long set, int size){
             for (int i = 2; i < 1 + NUM_WAYS; i++) {
                 memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
             }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
             break;
         case 56: // B8D4 + B8D0 + B8D0
             memcpy ( footprint + addr, B8D4, LINESIZE);
@@ -113,6 +166,15 @@ void PrimeSetWithSize(long set, int size){
             for (int i = 3; i < 2 + NUM_WAYS; i++) {
                 memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
             }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
+            break;
+        case 64: // NoComp B8D8
+            for (int i = 0; i < NUM_WAYS; i++) {
+                memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
+            }
+            printf("Set %ld primed with size %d\n", set, size);
+            //fflush(stdout);
             break;
     } // end switch
 }
@@ -216,6 +278,7 @@ int get_size(int set, void(*accessSecret)(), void(*flush)()){
     PrimeSetWithSize(set, testSize);
     accessSecret();
     int misses = ProbeSet(set);
+    printf("Misses = %d\n", misses);
     if (misses == 0) {
       hi = mid;
     } else {
@@ -285,3 +348,64 @@ int get_size_LRU(int set, void(*accessSecret)(), void(*flush)()){
   }
 }
 
+void AccessSetWithSize(long set, int size) {
+    // Update the lines to be the target size;
+    long addr = set * LINESIZE;
+    long gap = LINESIZE * NUM_SETS;
+    int i = NUM_WAYS+1;
+    // possible sizes in BDI: 8, 16, 20, 24, 34, 36, 40, 64
+   
+    // Hardcode the data pattern for BDI:
+    switch (size) {
+
+        case 8: // B8D0
+            memcpy ( footprint + addr + gap*i, B8D0, LINESIZE);
+            break;
+        case 16: // B8D1
+            memcpy ( footprint + addr + gap*i, B8D1, LINESIZE);
+            break;
+        case 20: //B4D1
+            memcpy ( footprint + addr + gap*i, B4D1, LINESIZE);
+            break;
+        case 24: // B8D2
+            memcpy ( footprint + addr + gap*i, B8D2, LINESIZE);
+            break;
+        case 28: // B8D0 + B4D1
+            memcpy ( footprint + addr + gap*i, B8D0, LINESIZE);
+            memcpy ( footprint + addr + gap*(i+1), B4D1, LINESIZE);
+            break;
+        case 30: // B8D0 + B4D1 + B1D0 + B1D0
+            memcpy ( footprint + addr + gap*i, B8D0, LINESIZE);
+            memcpy ( footprint + addr + gap*(i+1), B4D1, LINESIZE);
+            memcpy ( footprint + addr + gap*(i+2), B1D0, LINESIZE);
+            memcpy ( footprint + addr + gap*(i+3), B1D0, LINESIZE);
+            break;
+        case 34: // B2D1
+            memcpy ( footprint + addr + gap*i, B2D1, LINESIZE);
+            break;
+        case 36: // B4D2
+            memcpy ( footprint + addr + gap*i, B4D2, LINESIZE);
+            break;
+        case 40: // B8D4
+            memcpy ( footprint + addr + gap*i, B8D4, LINESIZE);
+            break;
+        case 44: // B4D2 + B8D0
+            memcpy ( footprint + addr + gap*i, B4D2, LINESIZE);
+            memcpy ( footprint + addr + gap*(i+1), B8D0, LINESIZE);
+            break;
+        case 48: // B8D4 + B8D0
+            memcpy ( footprint + addr + gap*i, B8D4, LINESIZE);
+            memcpy ( footprint + addr + gap*(i+1), B8D0, LINESIZE);
+            break;
+        case 56: // B8D4 + B8D0 + B8D0
+            memcpy ( footprint + addr + gap*i, B8D4, LINESIZE);
+            memcpy ( footprint + addr + gap*(i+1), B8D0, LINESIZE);
+            memcpy ( footprint + addr + gap*(i+2), B8D0, LINESIZE);
+            break;
+        case 64: // NoComp B8D8
+            memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
+            break;
+    } // end switch
+    printf("Set %ld TAccessed with size %d\n", set, size);
+    //fflush(stdout);
+}

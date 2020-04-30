@@ -8,3 +8,4 @@ int get_evicted_lines(int set, void(*accessSecret)(), void(*flush)());
 void initialize_data();
 int get_set(void (*flush)(), void (*accessKey)(), void (*dummyAccess)());
 int get_size(int set, void(*accessSecret)(), void(*flush)());
+void AccessSetWithSize(long set, int size);
