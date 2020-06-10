@@ -5,6 +5,7 @@
 #include <fstream>
 #include "spy.h"
 #include "trojan.h"
+
 #ifndef _COMMON_H
 #include "common.h"
 #endif
@@ -12,7 +13,7 @@ using namespace std;
 
 #define DEBUG
 
-long tset = 0;
+long tset = 8190;
 
 Spy spy;
 Trojan trojan;

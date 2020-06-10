@@ -74,7 +74,7 @@ WORD CBitStream::ReadNextWord() {
 
     WORD vtemp;
 
-    if(m_curr_offset+WORDLEN < m_blen) {    
+    if(m_curr_offset+WORDLEN <= m_blen) {    
         for(int i = 0; i < WORDLEN; i++){
             vtemp.x[i] = _read_bit(m_curr_offset);
             m_curr_offset++;

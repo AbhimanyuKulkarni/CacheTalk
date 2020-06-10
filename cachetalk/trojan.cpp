@@ -18,12 +18,12 @@ Trojan::~Trojan(void) {
 
 void Trojan::GenStream(int n) {
     for(int i = 0; i < n; i++) {
-        //WORD value;
-        WORD value = {'0','1','0'};
-       // for(int j = 0; j < WORDLEN; j++) {
-       //     char randbit = (char) rand()%2;
-       //     value[j] = randbit;
-       // }
+        WORD value;
+        //WORD value = {'1','0','0'};
+        for(int j = 0; j < WORDLEN; j++) {
+            int randbit = rand()%2 + '0';
+            value.x[j] = randbit;
+        }
         m_data_stream.WriteWord(value);
     }
 #ifdef DEBUG 

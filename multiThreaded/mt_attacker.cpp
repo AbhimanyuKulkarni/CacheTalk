@@ -1,6 +1,7 @@
 /* Considerations:  lock = 1 -> Spy is active
                     lock = 2 -> Trojan active and runs trojan.AccessSet()
-                    lock = 3 -> Trojan active and runs Acknowledgement protocol */
+                    lock = 3 -> Trojan active and runs Acknowledgement protocol
+                    lock = 4 -> Transmission is done and both threads should finish */
 
 #include "mt_attacker.h"
 #include <pthread.h>
@@ -36,17 +37,51 @@ void *spy_wrapper(void *arg) {
     
     // Spy Init Phase
     spy.SetTargetSet(tset);
-
+    #ifdef DEBUG
+        printf("Spy: Init Done\n");
+    #endif
     // Main Operation
     int done = 0;
-    while(!done) {
+    int loop_cnt = 0;
+    while(loop_cnt < 5) {
+        #ifdef DEBUG
+            printf("Spy inside loop count = %d\n", loop_cnt);
+        #endif
         pthread_mutex_lock(&lock);
-        int temp_size;
-        temp_size = spy.GetSize(&trojan_access, &flush);
-        spy.DecryptData(temp_size);
-        ack_to_trojan();
+        #ifdef DEBUG
+            printf("Spy Lock acquired with covid = %d\n", covid);
+        #endif
+        if(covid = 1) {
+            #ifdef DEBUG
+                printf("Spy Running Channel inside loop count = %d \n", loop_cnt);
+            #endif
+            int temp_size;
+            #ifdef DEBUG
+                printf("Spy Going into GetSize loop count = %d \n", loop_cnt);
+            #endif
+            temp_size = spy.GetSize(&trojan_access, &flush);
+            #ifdef DEBUG
+                printf("Spy Size detected = %d inside loop count = %d \n", temp_size, loop_cnt);
+                printf("Spy Going into Decrypt data\n");
+            #endif
+            spy.DecryptData(temp_size);
+            #ifdef DEBUG
+                printf("Spy Decrypted, Going into ack to trojan loop count = %d \n", loop_cnt);
+            #endif
+            ack_to_trojan();
+        }
+        else if(covid = 4) {
+            #ifdef DEBUG
+                printf("Spy Done recieved loop count = %d \n", loop_cnt);
+            #endif
+            done = 1;
+        }
         pthread_mutex_unlock(&lock);
+        #ifdef DEBUG
+            printf("Spy Unlocked \n");
+        #endif
         /* How to update the "done" variable? */
+        loop_cnt++;
     }
 
 }
@@ -54,36 +89,69 @@ void *spy_wrapper(void *arg) {
 void *trojan_wrapper(void *arg) {
 
     Trojan trojan;
-#ifdef DEBUG
-    printf("In trojan wrapper\n");
-#endif
+    #ifdef DEBUG
+        printf("In trojan wrapper\n");
+    #endif
     // Trojan Init Phase
     trojan.SetTargetSet(tset);
-    trojan.GenStream(100);
+    trojan.GenStream(5);
     WORD* first_data = trojan.GetData();
     if(first_data == NULL) {
         cerr << "Target Stream not generated! Please Check Trojan Initialization." << endl;
     }
+    #ifdef DEBUG
+        printf("Trojan: Init Done\n");
+    #endif
 
     // Main Operation
     int done = 0;
-    while(!done) {
+    int loop_cnt = 0;
+    while(loop_cnt < 30) {
+        #ifdef DEBUG
+            printf("Trojan inside loop count = %d\n", loop_cnt);
+        #endif
         pthread_mutex_lock(&lock);
+        #ifdef DEBUG
+            printf("Trojan Lock acquired with covid = %d\n", covid);
+        #endif
         //while(/*Wait to acquire lock*/);
         if(covid == 2) {
+            #ifdef DEBUG
+                printf("Trojan Access Set\n");
+            #endif
             trojan.AccessSet();
+            covid = 1;
         }
         else if(covid == 3) {
+            #ifdef DEBUG
+                printf("Trojan Ack to trojan --> \n");
+            #endif
             trojan.TransmissionAck();
             WORD* nxt_data = trojan.GetData();
-            if(nxt_data == NULL) {
+            if(*nxt_data[0] == 'e') {
+                #ifdef DEBUG
+                    printf("EOF recieved\n");
+                #endif
                 done = 1;
+                covid = 4;
             }
-            done = 0;
+            else {
+                #ifdef DEBUG
+                    printf("Next data recieved = ");
+                    for(int i = 0; i < WORDLEN; i++) {
+                        cout << nxt_data[i];
+                    }
+                    cout << endl;
+                #endif
+                covid = 1;
+            }
         }
         /* Here -> Set the lock value back to 0, i.e. release the lock*/
-        covid = 1;
         pthread_mutex_unlock(&lock);
+        #ifdef DEBUG
+            printf("Trojan unlocked!");
+        #endif
+        loop_cnt++;
     }
 
     // Here -> Somehow pass the information out to Spy that trojan is done.

@@ -13,7 +13,7 @@ void init_trojan() {
     printf("Attacker: Init trojan\n");
 #endif
     trojan.SetTargetSet(tset);
-    trojan.GenStream(2);
+    trojan.GenStream(10);
     WORD first_data = trojan.GetData();
     if(first_data.x[0] == 'e') {
         cerr << "Target Stream not generated! Please Check Trojan Initialization." << endl;

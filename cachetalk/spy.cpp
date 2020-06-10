@@ -55,18 +55,16 @@ WORD Spy::DecryptData(int size) {
     }
     int tmp_idx = size_idx;
     for(int i = 0; i < WORDLEN; i++) {
-        vtemp.x[i] = tmp_idx%2 + '0';
+        vtemp.x[WORDLEN - 1 - i] = tmp_idx%2 + '0';
         tmp_idx = tmp_idx/2;
     }
 
     m_rec_stream.WriteWord(vtemp);
 
-    #ifdef DEBUG
-        printf("Spy: Received data = ");
-        for(int i = 0; i < WORDLEN; i++) {
-            cout << vtemp[i];
-        }
-    #endif
+    printf("Spy: Received data = ");
+    for(int i = 0; i < WORDLEN; i++) {
+        cout << vtemp.x[i];
+    }
     
     return vtemp;
 }

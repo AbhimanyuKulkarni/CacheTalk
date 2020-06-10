@@ -62,6 +62,8 @@ void PrimeSetWithSize(long set, int size){
     long gap = LINESIZE * NUM_SETS;
     // possible sizes in BDI: 8, 16, 20, 24, 34, 36, 40, 64
    
+    printf("Footprint Address is %pn", &footprint);
+
     // Hardcode the data pattern for BDI:
     switch (size) {
 
@@ -135,8 +137,10 @@ void PrimeSetWithSize(long set, int size){
             break;
         case 40: // B8D4
             memcpy ( footprint + addr, B8D4, LINESIZE);
+            printf("Memcpy done on address %lx with size 40\n", addr);
             for (int i = 1; i < NUM_WAYS; i++) {
                 memcpy ( footprint + addr + gap*i, B8D8, LINESIZE);
+                printf("Memcpy done on address %lx with size 64\n", (addr + gap*i));
             }
             printf("Set %ld primed with size %d\n", set, size);
             //fflush(stdout);
@@ -352,7 +356,7 @@ void AccessSetWithSize(long set, int size) {
     // Update the lines to be the target size;
     long addr = set * LINESIZE;
     long gap = LINESIZE * NUM_SETS;
-    int i = NUM_WAYS+1;
+    int i = NUM_WAYS+5;
     // possible sizes in BDI: 8, 16, 20, 24, 34, 36, 40, 64
    
     // Hardcode the data pattern for BDI:

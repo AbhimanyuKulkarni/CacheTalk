@@ -43,19 +43,33 @@ int Spy::GetSize(void(*CallTrojan)(), void(*flush)()) {
 WORD* Spy::DecryptData(int size) {
     WORD* vtemp;
     vtemp = (WORD*)malloc(sizeof(WORD));
-    int size_idx = *((int*) bsearch(&size, &sizes, 8, sizeof(int), compare));
+    //int size_idx = *((int*) bsearch(&size, &sizes, 8, sizeof(int), compare));
+    
+    int size_idx = 100;
+    for(int i = 0; i < 8; i++) {
+        if(sizes[i] == size) {
+            size_idx = i;
+        }
+    }
+    if(size_idx == 100) {
+        cerr << "Size not found in sizes array";
+        return NULL;
+    }
     int tmp_idx = size_idx;
     for(int i = 0; i < WORDLEN; i++) {
-        *vtemp[i] = tmp_idx%2;
+        *vtemp[i] = tmp_idx%2 + '0';
         tmp_idx = tmp_idx/2;
     }
     m_rec_stream.WriteWord(*vtemp);
-#ifdef DEBUG
+    
+    #ifdef DEBUG
     printf("Spy: Received data = ");
     for(int i = 0; i < WORDLEN; i++) {
         cout << vtemp[i];
     }
-#endif
+    cout << endl;
+    #endif
+    
     return vtemp;
 }
 
